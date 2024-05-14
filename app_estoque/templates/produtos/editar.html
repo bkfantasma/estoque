@@ -1,0 +1,16 @@
+{% extends "layout/layout.html" %}
+{% block conteudo %}
+
+<form method="POST">
+    {% csrf_token %}
+    <div style="text-align: center;" class="container">
+        <h1>Edicao de produto:</h1>
+        <input class="form-control-sm" type="text" placeholder="{{ produto.nome }}" name="nome" value="{{ produto.nome }}">
+        <input class="form-control-sm" type="text" placeholder="{{ produto.categoria }}" name="categoria" value="{{ produto.categoria }}">
+        <input class="form-control-sm" type="text" placeholder="{{ produto.quantidade }}" name="quantidade" value="{{ produto.quantidade }}">
+        <input class="form-control-sm" type="text" placeholder="{{ produto.preco }}" name="preco" value="{{ produto.preco }}">
+        <a href="{% url 'listagem_produtos' %}"><button class="form-control-sm">Enviar</button></a>
+    </div>
+  </form>
+
+{% endblock %}
