@@ -1,0 +1,16 @@
+{% extends 'layout/layout_user.html' %}
+{% block conteudo %}   
+    
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div class="tela-login">
+        <h1>Login</h1>
+        <input type="text" name="nome" placeholder="Nome">
+        <br><br>
+        <input type="password" name="senha" placeholder="Senha">
+        <br><br>
+        <button type="submit">Enviar</button>
+    </div>
+</form>
+
+{% endblock %}

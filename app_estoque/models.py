@@ -8,9 +8,8 @@ class Produto(models.Model):
     preco = models.IntegerField()
 
 class Cargo(models.Model):
-    id = models.AutoField(primary_key=True)
     nome = models.TextField(max_length=255)
-    permissao = models.IntegerField(max_length=1)
+    permissao = models.IntegerField(default=0)
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,4 +17,4 @@ class User(models.Model):
     email = models.EmailField(max_length=255)
     senha = models.TextField(max_length=255)
     chave_acesso = models.TextField(max_length=3)    
-    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name='usuarios')
+    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name='usuarios', null=True, blank=True)
