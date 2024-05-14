@@ -1,0 +1,34 @@
+{% extends 'layout/layout.html' %}
+{% block conteudo %}
+
+<div style="text-align: center;" class="container">
+    <h1>Todos os produtos:</h1>
+</div>
+    <div class="container">
+        {% csrf_token %}
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>id</th>
+                <th>nome</th>
+                <th>categoria</th>
+                <th>quantidade</th>
+                <th>preco (R$)</th>
+                <th>funcao</th>
+            </tr>
+        {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.id_produto }}</td>
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.categoria }}</td>
+                <td>{{ produto.quantidade }}</td>
+                <td>{{ produto.preco }}</td>
+                    <td><button><a href="{% url 'deletar_produto' produto.id_produto %}">Deletar</a></button></a>
+                    <button><a href="{% url 'editar_produto' produto.id_produto %}">Editar</a></button></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'layout/layout.html' %}
+{% block conteudo %}
+
+      <form action="{% url 'criar_produtos' %}" method="POST">
+        {% csrf_token %}
+        <div style="text-align: center;" class="container">
+            <h1>Cadastro de produtos:</h1>
+            <input class="form-control-sm" type="text" placeholder="Nome" name="nome">
+            <input class="form-control-sm" type="text" placeholder="Categoria" name="categoria">
+            <input class="form-control-sm" type="text" placeholder="Quantidade" name="quantidade">
+            <input class="form-control-sm" type="text" placeholder="Preco" name="preco">
+            <a href="{% url 'listagem_produtos' %}"><button class="form-control-sm">Enviar</button></a>
+        </div>
+      </form>
+      <p>
+
+      </p>
+      <div class="container">
+        <table class="table table-bordered table-striped">
+          <h3 style="text-align: center;" class="container">Ultimos produtos adicionados:</h3> 
+          <tr>
+                <th>id</th>
+                <th>nome</th>
+                <th>categoria</th>
+                <th>quantidade</th>
+                <th>preco (R$)</th>
+            </tr>
+        {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.id_produto }}</td>
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.categoria }}</td>
+                <td>{{ produto.quantidade }}</td>
+                <td>{{ produto.preco }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
