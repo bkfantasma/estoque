@@ -1,36 +1,36 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required 
 from .models import Produto, User, Cargo
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import RegisterForm
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     produtos = Produto.objects.order_by('-id_produto')[:4]
-    return render(request, 'index/home.html', {'produtos':produtos})
+    return render(request, 'app_estoque/index/home.html', {'produtos': produtos})
 
-@login_required
 def listagem_produtos(request):
     produtos = Produto.objects.all()
-    return render(request, 'produtos/produtos.html', {'produtos':produtos})
+    return render(request, 'app_estoque/produtos/produtos.html', {'produtos': produtos})
 
-@login_required
 def criar_produtos(request):
     if request.method == 'POST':
         new_product = Produto()
-        new_product.nome = request.POST.get('nome') 
+        new_product.nome = request.POST.get('nome')
         new_product.categoria = request.POST.get('categoria')
         new_product.quantidade = request.POST.get('quantidade')
         new_product.preco = request.POST.get('preco')
         new_product.save()
         return redirect('home')
-    return render(request, 'produtos/criar.html')
+    return render(request, 'app_estoque/produtos/criar.html')
 
-@login_required 
+@login_required
 def deletar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id_produto=produto_id)
     produto.delete()
     return redirect('listagem_produtos')
 
-@login_required 
+@login_required
 def editar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id_produto=produto_id)
     if request.method == 'POST':
@@ -40,38 +40,35 @@ def editar_produto(request, produto_id):
         produto.preco = request.POST.get('preco')
         produto.save()
         return redirect('listagem_produtos')
-    return render(request, 'produtos/editar.html', {'produto': produto})
+    return render(request, 'app_estoque/produtos/editar.html', {'produto': produto})
 
-def login(request):
-    if request.method == "POST":
-        nome = request.POST.get("nome")
-        senha = request.POST.get("senha")
-        user = authenticate(nome=nome, senha=senha)
-        if user is not None:
-            login(request, user)
-            redirect('home')
-        else:
-            return render(request, 'user/login.html', {'error_message':'credenciais invalidas.'})
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect('home')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'app_estoque/registration/login.html', {'form': form})
 
-    return render(request, 'user/login.html')
+@login_required
+def user_logout(request):
+    auth_logout(request)
+    return redirect('home')
 
-def signup(request):
-    return render(request, 'user/signup.html')
-
-def criar_user(request):
-    nome = request.POST.get('nome')
-    email = request.POST.get('email')
-    senha = request.POST.get('senha')
-    chave_acesso = request.POST.get('chave_acesso')
-        
-    if not (nome and email and senha and chave_acesso):
-        return render(request, 'registration/signup.html', {'error_message': 'Todos os campos são obrigatórios.'})
-        
-    cargo = Cargo.objects.filter(nome='funcionario').first()
-    if not cargo:
-        return render(request, 'registration/signup.html', {'error_message': 'Cargo "funcionario" não encontrado.'})
-        
-    user = User(nome=nome, email=email, senha=senha, chave_acesso=chave_acesso, cargo=cargo)
-    user.save()
-        
-    return redirect('login')
+def register_user(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.save()
+            auth_login(request, user)
+            return redirect('home')
+    else:
+        form = RegisterForm()
+    return render(request, 'app_estoque/registration/register.html', {'form': form})
