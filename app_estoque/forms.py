@@ -10,9 +10,8 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['nome', 'email', 'password1', 'password2', 'chave_acesso', 'cargo']
+        fields = ['nome', 'email', 'password1', 'chave_acesso', 'cargo']
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})

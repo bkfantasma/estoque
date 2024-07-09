@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
+import logging
+
+logger = logging.getLogger(__name__)
 
 def home(request):
     produtos = Produto.objects.order_by('-id_produto')[:4]
@@ -46,14 +49,22 @@ def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=email, password=password)
+
             if user is not None:
                 auth_login(request, user)
+                logger.debug(f"Usuário {user} autenticado com sucesso")
                 return redirect('home')
+
+            else:
+                logger.debug("Autenticação falhou")
+                form.add_error(None, 'Login falhou. Verifique seu email e senha.')
+
     else:
         form = AuthenticationForm()
+
     return render(request, 'app_estoque/registration/login.html', {'form': form})
 
 @login_required

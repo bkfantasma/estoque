@@ -14,7 +14,7 @@
         </div>        
       </nav>
       {% if user.is_authenticated %}
-          <p>Bem-vindo, {{ user.username }}!</p>
+          <p>Bem-vindo, {{ user.nome }}!</p>
           <a href="{% url 'app_logout' %}">Logout</a>
           {% else %}
           <a href="{% url 'app_login' %}">Login</a>
