@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Produto
 
 def home(request):
-    produtos = Produto.objects.order_by('-id_produto')
+    produtos = Produto.objects.order_by('-id_produto')[:4]
 
     return render(request, 'index/home.html', {'produtos':produtos})
 

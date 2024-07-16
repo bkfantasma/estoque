@@ -1,8 +1,6 @@
-{% extends 'layout/layout.html' %}
+{% extends 'app_estoque/layout/layout.html' %}
 {% block conteudo %}
-{% comment %} {% load static %}
 
-    <script type="text/javascript" src='{% static "JS/index.js" %}'></script> {% endcomment %}
       <form action="{% url 'criar_produtos' %}" method="POST">
         {% csrf_token %}
         <div style="text-align: center;" class="container">
