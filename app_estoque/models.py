@@ -5,12 +5,12 @@ class Produto(models.Model):
     nome = models.TextField(max_length=255)
     categoria = models.TextField(max_length=255)
     quantidade = models.IntegerField()
-    preco = models.IntegerField()
+    preco = models.FloatField(float)
 
 class Cargo(models.Model):
     id = models.AutoField(primary_key=True)
     nome = models.TextField(max_length=255)
-    permissao = models.IntegerField(max_length=1)
+    permissao = models.IntegerField()
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -19,3 +19,4 @@ class User(models.Model):
     senha = models.TextField(max_length=255)
     chave_acesso = models.TextField(max_length=3)    
     cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE, related_name='usuarios')
+    
