@@ -5,7 +5,7 @@ class Produto(models.Model):
     nome = models.TextField()
     categoria = models.TextField()
     quantidade = models.IntegerField()
-    preco = models.IntegerField()
+    preco = models.FloatField(float)
 
 class Cargo(models.Model):
     id = models.AutoField(primary_key=True)
