@@ -1,10 +1,44 @@
 /* static/my_app/css/styles.css */
 
 body {
-    background-color: #f0f0f0;
+    background-color: white;
     font-family: Arial, sans-serif;
 }
 
 h1 {
     color: #333;
 }
+
+.botaoEnviar {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    border-color: green;
+}
+
+.botaoExcluir {
+    background-color: rgb(202, 42, 42);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    border-color: rgb(202, 42, 42);
+}
+
+.botaoEditar {
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    border-color: blue;
+}
+
+.semSublinhado {
+    text-decoration: none;
+}
+
+.centralizar{
+    text-align: center;
+}
+
+
+

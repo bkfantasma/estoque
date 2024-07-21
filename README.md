@@ -1,3 +1,6 @@
 # estoque
-crud_django
-aaaaa
+
+próximos típocos a serem desenvolvido: 
+
+- calcular preço de pedido inteiro a partir da escolha de N itens
+

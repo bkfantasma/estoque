@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Produto
+# from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     produtos = Produto.objects.order_by('-id_produto')
@@ -22,6 +24,26 @@ def criar_produtos(request):
     new_product.save()
 
     return redirect(home)
+
+# def criar_produtos(request):
+#     if request.method == 'POST':
+#         nome = request.POST.get('nome')
+#         categoria = request.POST.get('categoria')
+#         quantidade = request.POST.get('quantidade')
+#         preco = request.POST.get('preco')
+        
+#         produto = Produto(nome=nome, categoria=categoria, quantidade=quantidade, preco=preco)
+#         produto.save()
+
+#         produto_data = {
+#             'nome': produto.nome,
+#             'categoria': produto.categoria,
+#             'quantidade': produto.quantidade,
+#             'preco': produto.preco,
+#         }
+        
+#         return JsonResponse({'message': 'Produto criado com sucesso!'}) 
+#     return JsonResponse({'error': 'Requisição inválida'}, status=400)    
 
 def deletar_produto(request, produto_id):
     # Deletar produto
