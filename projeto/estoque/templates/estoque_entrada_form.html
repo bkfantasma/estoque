@@ -2,6 +2,16 @@
 {% load widget_tweaks %}
 {% load bootstrap %}
 
+{% block css %}
+
+  <style>
+    .form-control {
+      margin: 10px;
+    }
+  </style>
+
+{% endblock css %}
+
 {% block conteudo %}
 <div class="container">
     <div id="error-message" class="alert alert-danger" style="display: none;">
@@ -19,69 +29,54 @@
                     {% render_field field class="form-control" %}
                 </div>
             {% endfor %}
+            
+            {{ formset.management_form }}
+        
         </div>
 
-        {{ formset.management_form }}
-        
         <div class="row">
             <div class="col-sm-12">
-                <legend style="border-bottom: 1px solid #e5e5e5;">Produtos</legend>
-                <div id="estoque" class="form-inline">
+              <legend style="border-bottom: 1px solid #e5e5e5;">Produtos</legend>
+              <div id="estoque" class="form-inline">
+                {% for item_estoque_form in formset %}
+                <div id="item-{{ forloop.counter0 }}" class="form-group">
                 </div>
+                {{ item_estoque_form|bootstrap }}
+                {% endfor %}
             </div>
-        </div>
+            <span id="add-item" class="btn btn-info" style="margin-top: 10px;">
+              <i class="fa fa-plus"></i> Adicionar
+            </span>
+            </div>
+          </div>
 
-        <button type="button" id="add-item" class="btn btn-info" style="margin-top: 10px;">Adicionar</button>
-
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 10px;">
             <button type="submit" class="btn btn-primary">Salvar</button>
             <a href="{% url 'estoque:estoque_entrada_list' %}" class="btn btn-danger">Cancelar</a>
         </div>
     </form>
 </div>
+
 {% endblock conteudo %}
 
 {% block js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const estoqueContainer = document.getElementById('estoque');
-        const totalForms = document.querySelector('#id_estoque-TOTAL_FORMS');
-        const addItemButton = document.getElementById('add-item');
-        const errorMessageDiv = document.getElementById('error-message');
-
-        const emptyForm = `
-            <div class="form-group" style="margin-top: 10px;">
-                <label for="id_estoque-__prefix__-produto">Produto</label>
-                <input type="text" name="estoque-__prefix__-produto" class="form-control" required>
-                <label for="id_estoque-__prefix__-quantidade">Quantidade</label>
-                <input type="number" name="estoque-__prefix__-quantidade" class="form-control" required>
-                <!-- Outros campos do item do estoque podem ser aqui adicionados -->
-            </div>
-        `;
-
-        addItemButton.addEventListener('click', function () {
-            const formCount = parseInt(totalForms.value); 
-            let newFormHtml = emptyForm.replace(/__prefix__/g, formCount);
-
-            const newFormElement = document.createElement('div');
-            newFormElement.classList.add('form-group');
-            newFormElement.style.marginTop = '10px';
-            newFormElement.innerHTML = newFormHtml;
-
-            const produtoField = newFormElement.querySelector('input[name*="produto"]');
-            const quantidadeField = newFormElement.querySelector('input[name*="quantidade"]');
-
-            if (!produtoField.value || !quantidadeField.value) {
-                errorMessageDiv.style.display = 'block'; 
-                return; 
-            } else {
-                errorMessageDiv.style.display = 'none'; 
-            }
-
-            estoqueContainer.appendChild(newFormElement);
-
-            totalForms.value = formCount + 1; 
-        });
-    });
+    console.log('carregando itens')
+    $(document).ready(function(){
+        $('#add-item').click(function(ev){
+            ev.preventDefault();
+            var count = $('#estoque').children().length;
+            var tmplMarkup = $('#item-estoque').html();
+            var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+            $('div#estoque').append(compiledTmpl); 
+            
+            $('#id_estoque-TOTAL_FORMS').attr('value', count + 1);
+        })
+    })
+</script>
+<script type="text/html" id="item-estoque">
+    <div id="item-__prefix__" class="form-group" style="margin-top: 10px;">
+        {{ formset.empty_form|bootstrap }}
+    </div>
 </script>
 {% endblock js %}

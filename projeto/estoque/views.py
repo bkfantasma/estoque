@@ -20,23 +20,26 @@ def estoque_entrada_detail(request, pk):
     return render(request, template_name, context)
 
 def estoque_entrada_add(request):
-    estoque_form = Estoque()  # Um novo objeto de Estoque
+    estoque_form = Estoque()  
     item_estoque_formset = inlineformset_factory(
         Estoque,
         EstoqueItens,
         form=EstoqueItensForm,
-        extra=1,  # Um item extra por padrão
-        min_num=1,  # Exigir pelo menos um item
+        extra=0,  
+        min_num=1,  
         validate_min=True,
     )
 
     if request.method == 'POST':
         form = EstoqueForm(request.POST, instance=estoque_form)
         formset = item_estoque_formset(request.POST, instance=estoque_form)
-
+        
         if form.is_valid() and formset.is_valid():
-            estoque = form.save()  # Salva a entrada de estoque
-            formset.save()  # Salva os itens de estoque associados à entrada
+            estoque = form.save()  
+            print(estoque)
+            formset.instance = estoque
+            
+            formset.save() 
             messages.success(request, "Estoque e produtos adicionados com sucesso!")
             return redirect('estoque:estoque_entrada_detail', pk=estoque.pk)
         else:
@@ -44,7 +47,7 @@ def estoque_entrada_add(request):
     else:
         form = EstoqueForm(instance=estoque_form)
         formset = item_estoque_formset(instance=estoque_form)
-
+   
     return render(request, 'estoque_entrada_form.html', {
         'form': form,
         'formset': formset,
