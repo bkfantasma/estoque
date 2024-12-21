@@ -27,7 +27,9 @@
                     {% render_field field class="form-control" %}
                 </div>
             {% endfor %}
-            
+
+            <input type="hidden" name="movimento" value="e">
+
             {{ formset.management_form }}
         </div>
 
@@ -132,23 +134,23 @@
     });
 
     $(document).on('change', '.clquantidade', function(event) {
-        let self = $(this);
-        let quantidade = Number(self.val()) || 0;
-        let campoProduto = self.attr('id').replace('quantidade', 'produto');
-        let pk = $('#' + campoProduto).val();
+    let self = $(this);
+    let quantidade = Number(self.val()) || 0;
+    let campoProduto = self.attr('id').replace('quantidade', 'produto');
+    let pk = $('#' + campoProduto).val();
 
-        if (pk) {
-            let campoSaldo = self.attr('id').replace('quantidade', 'saldo');
-            let estoque = estoques[pk];  
+    if (pk) {
+        let campoSaldo = self.attr('id').replace('quantidade', 'saldo');
+        let estoque = estoques[pk];  
 
-            if (estoque !== undefined) {
-                let saldo = estoque + quantidade;
-                $('#' + campoSaldo).val(quantidade);  
-            }
-        } else {
-            alert('Selecione um produto antes de inserir quantidade');
+        if (estoque !== undefined) {
+            let novoSaldo = estoque + quantidade;
+            $('#' + campoSaldo).val(novoSaldo); 
         }
-    });
+    } else {
+        alert('Selecione um produto antes de inserir quantidade');
+    }
+});
 </script>
 
 <script type="text/html" id="item-estoque">

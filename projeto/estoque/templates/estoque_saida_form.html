@@ -18,7 +18,7 @@
 
     <form method="POST" novalidate>
         {% csrf_token %}
-        <legend>Estoque Entrada</legend>
+        <legend>Estoque Saída</legend>
 
         <div>
             {% for field in form.visible_fields %}
@@ -28,6 +28,8 @@
                 </div>
             {% endfor %}
             
+            <input type="hidden" name="movimento" value="s">
+
             {{ formset.management_form }}
         </div>
 
@@ -45,6 +47,7 @@
                         {% endfor %}
                     </div>
                     {% endfor %}
+                    
                 </div>
                 <span id="add-item" class="btn btn-info" style="margin-top: 10px;">
                     <i class="fa fa-plus"></i> Adicionar
@@ -142,8 +145,8 @@
             let estoque = estoques[pk];  
 
             if (estoque !== undefined) {
-                let saldo = estoque + quantidade;
-                $('#' + campoSaldo).val(quantidade);  
+                let novoSaldo = estoque - quantidade;
+                $('#' + campoSaldo).val(novoSaldo);  
             }
         } else {
             alert('Selecione um produto antes de inserir quantidade');
