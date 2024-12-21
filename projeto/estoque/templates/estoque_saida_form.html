@@ -18,7 +18,7 @@
 
     <form method="POST" novalidate>
         {% csrf_token %}
-        <legend>Entrada do Estoque</legend>
+        <legend>Estoque Entrada</legend>
 
         <div>
             {% for field in form.visible_fields %}
@@ -54,7 +54,7 @@
 
         <div style="margin-top: 10px;">
             <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="{% url 'estoque:estoque_entrada_list' %}" class="btn btn-danger">Cancelar</a>
+            <a href="{% url 'estoque:estoque_saida_list' %}" class="btn btn-danger">Cancelar</a>
         </div>
     </form>
 </div>

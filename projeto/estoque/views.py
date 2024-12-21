@@ -1,45 +1,66 @@
+import json
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, resolve_url, redirect
-from .forms import EstoqueForm, EstoqueItensForm
-from .models import Estoque, EstoqueItens
+from django.shortcuts import render, redirect
 from django.contrib import messages
-
-# Create your views here.
+from .forms import EstoqueForm, EstoqueItensForm
+from .models import Estoque, EstoqueItens, EstoqueEntrada, EstoqueSaida
+from projeto.produto.models import Produto
+from django.http import JsonResponse
 
 def estoque_entrada_list(request):
     template_name = 'estoque_entrada_list.html'
-    objects = Estoque.objects.filter(movimento = 'e')
+    objects = EstoqueEntrada.objects.all()
     context = {'object_list': objects}
     return render(request, template_name, context)
 
 def estoque_entrada_detail(request, pk):
     template_name = 'estoque_entrada_detail.html'
-    object = Estoque.objects.get(pk=pk)
+    object = EstoqueEntrada.objects.get(pk=pk)
     context = {'object': object}
     return render(request, template_name, context)
 
+def dar_baixa_estoque_add(estoque):
+    produtos = estoque.estoques.all()  
+    if produtos.exists():
+        for item in produtos:
+            produto = Produto.objects.get(pk=item.produto.pk)
+            produto.estoque += item.saldo
+            produto.save()
+            print('estoque atualizado!')
+    else:
+        print("Nenhum produto encontrado para o estoque.")
+
+def dar_baixa_estoque_saida(estoque):
+    produtos = estoque.estoques.all()  
+    if produtos.exists():
+        for item in produtos:
+            produto = Produto.objects.get(pk=item.produto.pk)
+            produto.estoque -= item.saldo
+            produto.save()
+            print('estoque atualizado!')
+    else:
+        print("Nenhum produto encontrado para o estoque.")
+
 def estoque_entrada_add(request):
-    estoque_form = Estoque()  
+    estoque_form = EstoqueEntrada()  
     item_estoque_formset = inlineformset_factory(
-        Estoque,
+        EstoqueEntrada,
         EstoqueItens,
         form=EstoqueItensForm,
         extra=0,  
-        min_num=1,  
+        min_num=0,  
         validate_min=True,
     )
 
     if request.method == 'POST':
         form = EstoqueForm(request.POST, instance=estoque_form)
         formset = item_estoque_formset(request.POST, instance=estoque_form)
-        
+
         if form.is_valid() and formset.is_valid():
             estoque = form.save()  
-            print(estoque)
-            formset.instance = estoque
-            
-            formset.save() 
+            formset.instance = estoque  
+            formset.save()  
+            dar_baixa_estoque_add(estoque)  
             messages.success(request, "Estoque e produtos adicionados com sucesso!")
             return redirect('estoque:estoque_entrada_detail', pk=estoque.pk)
         else:
@@ -47,8 +68,56 @@ def estoque_entrada_add(request):
     else:
         form = EstoqueForm(instance=estoque_form)
         formset = item_estoque_formset(instance=estoque_form)
-   
+
     return render(request, 'estoque_entrada_form.html', {
         'form': form,
         'formset': formset,
     })
+
+
+def estoque_saida_list(request):
+    template_name = 'estoque_saida_list.html'
+    objects = EstoqueSaida.objects.filter(movimento='s')
+    context = {'object_list': objects}
+    return render(request, template_name, context)
+
+
+def estoque_saida_add(request):
+    estoque_form = EstoqueSaida()  
+    item_estoque_formset = inlineformset_factory(
+        EstoqueSaida,
+        EstoqueItens,
+        form=EstoqueItensForm,
+        extra=0,  
+        min_num=0,  
+        validate_min=True,
+    )
+
+    if request.method == 'POST':
+        form = EstoqueForm(request.POST, instance=estoque_form)
+        formset = item_estoque_formset(request.POST, instance=estoque_form)
+
+        if form.is_valid() and formset.is_valid():
+            estoque = form.save()  
+            formset.instance = estoque  
+            formset.save()  
+            dar_baixa_estoque_saida(estoque)  
+            messages.success(request, "Estoque e produtos adicionados com sucesso!")
+            return redirect('estoque:estoque_saida_detail', pk=estoque.pk)
+        else:
+            messages.error(request, "Erro ao adicionar o estoque ou produtos. Verifique os campos.")
+    else:
+        form = EstoqueForm(instance=estoque_form)
+        formset = item_estoque_formset(instance=estoque_form)
+
+    return render(request, 'estoque_saida_form.html', {
+        'form': form,
+        'formset': formset,
+    })
+
+
+def estoque_saida_detail(request, pk):
+    template_name = 'estoque_saida_detail.html'
+    object = EstoqueSaida.objects.get(pk=pk)
+    context = {'object': object}
+    return render(request, template_name, context)

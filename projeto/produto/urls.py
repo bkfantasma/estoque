@@ -8,4 +8,5 @@ urlpatterns = [
     path('<int:pk>/', views.produto_detail, name='produto_detail'),
     path('add/', views.ProdutoCreate.as_view(), name='produto_add'),
     path('<int:pk>/edit/', views.ProdutoUpdate.as_view(), name='produto_edit'),
+    path('<int:pk>/json/', views.produto_json, name='produto_json'),
 ]
