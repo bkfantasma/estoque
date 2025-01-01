@@ -16,6 +16,7 @@
       <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'core:index' %}">Home</a>
         <a class="navbar-brand" href="{% url 'produto:produto_list' %}">Produtos</a>
+        <a class="navbar-brand" href="{% url 'vendas:register_venda' %}">venda</a>
         <div class="dropdown">
           <a class="navbar-brand dropdown-toggle" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
             Estoque
@@ -27,9 +28,11 @@
         </div>
       </div>
     </nav>
-      <div class="container">
-        {% block conteudo %} 
-        {% endblock %}
+    <div class="container">
+      {% block conteudo %} 
+      {% endblock %}
+      {% block css %}
+      {% endblock css %}
       </div>
       
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -16,7 +16,6 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>importado</th>
                     <th>ncm</th>
                         <th>produto</th>
                         <th>preco</th>
@@ -27,13 +26,6 @@
             <tbody>
                 {% for object in object_list %}
                 <tr>
-                    <td>
-                        {% if object.importado %}
-                        <i class="bi bi-check-circle"></i>
-                        {% else %}
-                        <i class="bi bi-x-circle"></i>
-                        {% endif %}
-                    </td>
                     <td>{{ object.ncm }}</td>
                     <td><a href="{{ object.get_absolute_url }}">{{ object.produto }}</a></td>
                     <td>R$ <span class="pull-right">{{ object.preco }}</span></td>

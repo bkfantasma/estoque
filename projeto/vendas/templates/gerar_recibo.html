@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<style>
+    .recibo-container {
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 20px auto;
+        width: 70%;
+        font-family: Arial, sans-serif;
+    }
+    .recibo-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .recibo-header h1 {
+        font-size: 24px;
+        margin: 0;
+    }
+    .recibo-body {
+        margin-top: 20px;
+    }
+    .recibo-body table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .recibo-body table th, .recibo-body table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+    .recibo-footer {
+        margin-top: 20px;
+        text-align: right;
+    }
+</style>
+{% endblock css %}
+
+{% block conteudo %}
+<div class="recibo-container">
+    <div class="recibo-header">
+        <h1>Recibo de Venda</h1>
+        <p>Data: {{ venda.data_venda|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <div class="recibo-body">
+        <p><strong>Forma de Pagamento:</strong> {{ venda.forma_pagamento }}</p>
+        <p><strong>ID da Venda:</strong> {{ venda.id }}</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td>{{ item.produto }}</td>
+                    <td>{{ item.quantidade }}</td>
+                    <td>{{ item.preco_unitario|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><strong>Total Geral:</strong> R$ {{ venda.total|floatformat:2 }}</p>
+    </div>
+
+    <div class="recibo-footer">
+        <p>Obrigado por sua compra!</p>
+    </div>
+</div>
+{% endblock conteudo %}

@@ -35,8 +35,11 @@ def produto_json(request, pk):
     try:
         produto = Produto.objects.get(pk=pk)
         data = {
+            'id': produto.id,
+            'produto': produto.produto,
+            'preco': produto.preco,
             'estoque': produto.estoque,
         }
-        return JsonResponse({'data': [data]})
+        return JsonResponse({'data': data})
     except Produto.DoesNotExist:
         return JsonResponse({'error': 'Produto não encontrado'}, status=404)

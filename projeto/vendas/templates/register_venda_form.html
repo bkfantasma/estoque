@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+{% load bootstrap %}
+
+{% block css %}
+<style>
+    .form-control {
+        margin: 10px;
+    }
+</style>
+{% endblock css %}
+
+{% block conteudo %}
+<div class="container">
+    <div id="error-message" class="alert alert-danger" style="display: none;">
+        <strong>Erro:</strong> Não foi possível adicionar o item. Verifique os campos.
+    </div>
+
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        <legend>Venda:</legend>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <legend style="border-bottom: 1px solid #e5e5e5;">Produtos</legend>
+                <div id="estoque" class="form-inline">
+                    {% for form in item_venda_formset %}
+                        <div id="item-{{ forloop.counter0 }}" class="form-group">
+                            {% for field in form %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% render_field field class="form-control" %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <span id="add-item" class="btn btn-info" style="margin-top: 10px;">
+                    <i class="fa fa-plus"></i> Adicionar
+                </span>
+            </div>
+        </div>
+
+        <div>
+            {% for field in venda_form.visible_fields %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% render_field field class="form-control" %}
+                </div>
+            {% endfor %}
+
+            {{ item_venda_formset.management_form }}
+        </div>
+
+        <div style="margin-top: 10px;">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'core:index' %}" class="btn btn-danger">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% endblock conteudo %}
+
+{% block js %}
+<script>
+    function atualizar_total() {
+        let total = 0.0;
+
+        $('#estoque .form-group').each(function () {
+            const quantidade = parseFloat($(this).find('.clquantidade').val()) || 0;
+            const precoUnitario = parseFloat($(this).find('.clpreco_unitario').val()) || 0;
+
+            total += quantidade * precoUnitario;
+        });
+
+        $('#id_total').val(total.toFixed(2)); 
+    }
+
+    function applyClasses(formGroup) {
+        formGroup.find('input, select').each(function () {
+            let name = $(this).attr('name');
+            if (name && name.includes('-produto')) {
+                $(this).addClass('clProduto');
+            } else if (name && name.includes('-quantidade')) {
+                $(this).addClass('clquantidade');
+            } else if (name && name.includes('-preco_unitario')) {
+                $(this).addClass('clpreco_unitario');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        addClassesToFields();
+
+        $('#add-item').click(function (ev) {
+            ev.preventDefault();
+
+            let totalFormsInput = $('#id_estoques-TOTAL_FORMS');  
+            let totalForms = parseInt(totalFormsInput.val());
+            let newFormIndex = totalForms;  
+            let tmplMarkup = $('#item-estoque').html(); 
+            let compiledTmpl = tmplMarkup.replace(/__prefix__/g, newFormIndex);
+
+            $('#estoque').append(compiledTmpl); 
+
+            totalFormsInput.val(newFormIndex + 1); 
+
+            let newForm = $('#item-' + newFormIndex);
+            newForm.find('select, input').each(function () {
+                let name = $(this).attr('name');
+                if (name) {
+                    $(this).attr('name', name.replace('__prefix__', newFormIndex));
+                }
+                let id = $(this).attr('id');
+                if (id) {
+                    $(this).attr('id', id.replace('__prefix__', newFormIndex));
+                }
+            });
+
+            applyClasses(newForm);
+            atualizar_total(); 
+        });
+
+        $(document).on('change', '.clquantidade, .clpreco_unitario', function () {
+            atualizar_total();
+        });
+
+        $(document).on('change', '.clProduto', function () {
+            let self = $(this);
+            let produtoId = self.val();  
+            let url = '/produto/' + produtoId + '/json/'; 
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (data) {
+                    if (data.data) {
+                        let preco = data.data.preco;  
+                        let precoUnitarioFieldId = self.attr('id').replace('produto', 'preco_unitario');
+                        $('#' + precoUnitarioFieldId).val(parseFloat(data.data.preco).toFixed(2)); 
+                        atualizar_total(); 
+                    } else {
+                        alert("Erro: Produto não encontrado.");
+                    }
+                },
+                error: function () {
+                    alert("Erro ao buscar os dados do produto.");
+                }
+            }); 
+        });
+
+        function addClassesToFields() {
+            $('#estoque .form-group').each(function () {
+                applyClasses($(this));
+            });
+        }
+    });
+</script>
+
+<script type="text/html" id="item-estoque">
+    <div id="item-__prefix__" class="form-group" style="margin-top: 10px;">
+        {% for field in item_venda_formset.empty_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% render_field field class="form-control" %}
+            </div>
+        {% endfor %}
+    </div>
+</script>
+
+{% endblock js %}
