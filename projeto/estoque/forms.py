@@ -15,3 +15,7 @@ class EstoqueItensForm(forms.ModelForm):
     class Meta:
         model = EstoqueItens
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.pop('saldo')
