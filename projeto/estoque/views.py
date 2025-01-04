@@ -1,11 +1,12 @@
 import json
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import EstoqueForm, EstoqueItensForm
 from .models import Estoque, EstoqueItens, EstoqueEntrada, EstoqueSaida
 from projeto.produto.models import Produto
 from django.http import JsonResponse
+
 
 def estoque_entrada_list(request):
     template_name = 'estoque_entrada_list.html'
@@ -41,6 +42,7 @@ def dar_baixa_estoque_saida(estoque):
     else:
         print("Nenhum produto encontrado para o estoque.")
 
+@login_required
 def estoque_entrada_add(request):
     estoque_form = EstoqueEntrada()  
     item_estoque_formset = inlineformset_factory(
@@ -50,6 +52,7 @@ def estoque_entrada_add(request):
         extra=0,  
         min_num=0,  
         validate_min=True,
+        can_delete=False,
     )
 
     if request.method == 'POST':
@@ -58,15 +61,13 @@ def estoque_entrada_add(request):
 
         if form.is_valid() and formset.is_valid():
             estoque = form.save(commit=False)
+            estoque.funcionario = request.user
             estoque.movimento = 'e'
             estoque.save()
             formset.instance = estoque  
             formset.save()  
             dar_baixa_estoque_add(estoque)  
-            messages.success(request, "Estoque e produtos adicionados com sucesso!")
             return redirect('estoque:estoque_entrada_detail', pk=estoque.pk)
-        else:
-            messages.error(request, "Erro ao adicionar o estoque ou produtos. Verifique os campos.")
     else:
         form = EstoqueForm(instance=estoque_form)
         form.fields['movimento'].initial = 'e'  
@@ -84,7 +85,7 @@ def estoque_saida_list(request):
     context = {'object_list': objects}
     return render(request, template_name, context)
 
-
+@login_required
 def estoque_saida_add(request):
     estoque_form = Estoque()  
     item_estoque_formset = inlineformset_factory(
@@ -94,6 +95,7 @@ def estoque_saida_add(request):
         extra=0,  
         min_num=0,  
         validate_min=True,
+        can_delete=False,
     )
 
     if request.method == 'POST':
@@ -102,15 +104,14 @@ def estoque_saida_add(request):
 
         if form.is_valid() and formset.is_valid():
             estoque = form.save(commit=False)
+            estoque.funcionario = request.user
             estoque.movimento = 's'
             estoque.save()
             formset.instance = estoque  
             formset.save()  
             dar_baixa_estoque_saida(estoque)  
-            messages.success(request, "Estoque e produtos adicionados com sucesso!")
             return redirect('estoque:estoque_saida_detail', pk=estoque.pk)
-        else:
-            messages.error(request, "Erro ao adicionar o estoque ou produtos. Verifique os campos.")
+
     else:
         form = EstoqueForm(instance=estoque_form)
         form.fields['movimento'].initial = 's'  

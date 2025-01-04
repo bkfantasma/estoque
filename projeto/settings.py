@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-u^3gi@j=#3t$119d+w^w0nd7nz7ic+a_4z@05yrwph+rthyd%n
 # AVISO DE SEGURANÇA: não execute com debug ativado em produção!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Definição de aplicativos
@@ -122,8 +122,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
 # Tipo de campo de chave primária padrão
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/admin/login' 
+LOGOUT_REDIRECT_URL = 'core:index'

@@ -3,13 +3,16 @@ from django.forms import modelformset_factory
 from django.contrib import messages
 from .models import Venda, ItemVenda
 from .forms import VendaForm, ItemVendaForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def register_venda(request):
     ItemVendaFormSet = modelformset_factory(
         ItemVenda,
         form=ItemVendaForm,
         fields=('produto', 'quantidade', 'preco_unitario'),
-        extra=1  
+        extra=0,
+        min_num=0,
     )
 
     if request.method == 'POST':

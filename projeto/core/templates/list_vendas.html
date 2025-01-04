@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block conteudo %}
+{% load static %}
+
+<div class="container">
+    <h3 style="text-align: center;">Últimas Vendas:</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Data e Hora</th>
+                <th>Forma de Pagamento</th>
+                <th>Total (R$)</th>
+            </tr>
+        </thead>
+            <tbody>
+                {% for venda in vendas %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'vendas:gerar_recibo' venda_id=venda.id %}">
+                                {{ venda.data_venda|date:"d/m/Y H:i" }}
+                            </a>
+                        </td>
+                        <td>{{ venda.forma_pagamento }}</td>
+                        <td>{{ venda.total_calculado|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'js/index.js' %}" defer></script>
+{% endblock %}
