@@ -52,7 +52,7 @@ def register_venda(request):
 
 def gerar_recibo(request, venda_id):
     venda = get_object_or_404(Venda, id=venda_id)
-    itens = venda.itens.all()  
+    itens = venda.itens.all()
     total = sum([item.quantidade * item.preco_unitario for item in itens])
 
     return render(request, 'gerar_recibo.html', {

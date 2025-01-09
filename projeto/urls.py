@@ -23,5 +23,7 @@ urlpatterns = [
     path('produto/', include('projeto.produto.urls')),
     path('estoque/', include('projeto.estoque.urls')),
     path('vendas/', include('projeto.vendas.urls')),
+    path('fornecedores/', include('projeto.fornecedores.urls')),
     path('admin/', admin.site.urls),
+    path('user/', include('projeto.user.urls')),
 ]

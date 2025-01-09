@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+
+{% block conteudo %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-info">
+                <h3>Informações do Usuário</h3>
+                <br>
+                <div class="user-detail">
+                    <p><strong>Nome:</strong> {{ user.nome }} {{ user.sobrenome }}</p>
+                    <br>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <br>
+                    <p><strong>Último Login:</strong> {{ user.last_login }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="stock-movements">
+                <h3>Movimentações de Estoque</h3>
+                {% if movimentacoes_estoque %}
+                <div class="movements-list">
+                    {% for movimento in movimentacoes_estoque %}
+                    <div class="movement-item">
+                        <div class="movement-header">
+                            <strong>Nota Fiscal:</strong> {{ movimento.nf_formated }}
+                            <span class="movement-date">{{ movimento.created }}</span>
+                        </div>
+                        <div class="movement-body">
+                            <p><strong>Tipo de Movimento:</strong>
+                                {% if movimento.movimento == 'e' %}
+                                    Entrada
+                                    <br>
+                                    <a href="{% url 'estoque:estoque_entrada_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
+                                {% else %}
+                                Saída
+                                <br>
+
+                                <a href="{% url 'estoque:estoque_saida_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="alert alert-warning">Nenhuma movimentação de estoque encontrada.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block css %}
+<style>
+    .container {
+        margin-top: 20px;
+    }
+    
+    .user-info, .stock-movements {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+    
+    .user-info h3, .stock-movements h3 {
+        color: #007bff;
+    }
+    
+    .user-detail p {
+        margin-bottom: 10px;
+    }
+    
+    .movement-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .movement-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .movement-body {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    
+    .movement-date {
+        font-size: 12px;
+        color: #888;
+    }
+    
+    .movement-item a {
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .user-info, .stock-movements {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock css %}

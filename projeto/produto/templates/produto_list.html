@@ -1,44 +1,58 @@
 {% extends 'layout.html' %}
+
 {% block conteudo %}
 
 <div style="text-align: center; padding-top: 5px;" class="container d-flex justify-content-between align-items-center">
     <h1>Todos os produtos:</h1>
     <span class="pull-right">
         <a href="{% url 'produto:produto_add' %}">
+            {% if user.is_authenticated %}
             <button type="button" class="btn btn-primary">
                 <span class="fa fa-plus"></span> Adicionar
             </button>
+            {% endif %}
         </a>
     </span>
 </div>
-    <div class="container">
-        {% if object_list %}
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>ncm</th>
-                        <th>produto</th>
-                        <th>preco</th>
-                        <th class="text-center">estoque</th>
-                        <th class="text-center">estoque_minimo</th>
-                    </tr>
-            </thead>
-            <tbody>
-                {% for object in object_list %}
-                <tr>
-                    <td>{{ object.ncm }}</td>
-                    <td><a href="{{ object.get_absolute_url }}">{{ object.produto }}</a></td>
-                    <td>R$ <span class="pull-right">{{ object.preco }}</span></td>
-                    <td class="text-center">{{ object.estoque }}</td>
-                    <td class="text-center">{{ object.estoque_minimo }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-         <p class="alert alert-warning">Sem itens na lista</p>
-    </div>
+
+<div class="container">
+    {% if object_list %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ncm</th>
+                <th>produto</th>
+                <th>preço</th>
+                <th class="text-center">estoque</th>
+                <th class="text-center">estoque mínimo</th>
+                <th class="text-center">fornecedor</th>
+                {% if user.is_authenticated %}
+                    <th class="text-center">ações</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <td>{{ object.ncm }}</td>
+                <td><a href="{{ object.get_absolute_url }}">{{ object.produto }}</a></td>
+                <td>R$ <span class="pull-right">{{ object.preco }}</span></td>
+                <td class="text-center">{{ object.estoque }}</td>
+                <td class="text-center">{{ object.estoque_minimo }}</td>
+                <td class="text-center">{{ object.fornecedor.nome }}</td>
+                {% if user.is_authenticated %}
+                <td>
+                    <a href="{% url 'produto:produto_delete' object.id %}" class="btn btn-danger">Excluir</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="alert alert-warning" style="display: none;" id="message">Sem itens na lista</p>
+
     {% endif %}
-
-
+</div>
 
 {% endblock %}

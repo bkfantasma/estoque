@@ -24,7 +24,6 @@ class ProdutoClass:
         for produto in produtos:
             data = dict(
                 produto=produto,
-                importado = choice((True, False)),
                 ncm = Utils.gen_digits(8),
                 preco = random() * randint(10, 50),
                 estoque = randint(10, 200),

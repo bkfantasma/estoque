@@ -16,7 +16,6 @@
  <table class="table table-striped">
     <thead>
         <tr>
-            <th>Item</th>
             <th>Nf</th>
             <th>Data</th>
             <th>Funcionario</th>
@@ -25,12 +24,9 @@
     <tbody>
         {% for object in object_list %}
         <tr>
-            <td>
-                <a href="{{ object.get_absolute_url }}">{{ object }}</a>
-            </td>
-            <td>{{ object.nf_formated }}</td>
+            <td><a href="{% url 'estoque:estoque_saida_detail' object.id %}">{{ object.nf_formated }}</a></td>
             <td>{{ object.created }}</td>
-            <td>{{ object.funcionario.first_name }}</td>
+            <td>{{ object.funcionario }}</td>
         </tr>
         {% endfor %}
     </tbody>

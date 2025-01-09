@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'projeto.core',
     'projeto.produto',
     'projeto.estoque',
+    'projeto.fornecedores',
     'projeto.vendas',
+    'projeto.user',
 ]
 
 MIDDLEWARE = [
@@ -127,5 +129,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = '/admin/login' 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTH_USER_MODEL = 'user.User'
+LOGIN_URL = '/user/signin' 
 LOGOUT_REDIRECT_URL = 'core:index'

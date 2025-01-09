@@ -4,13 +4,16 @@
 
 <div class="container" style="margin-top: 5px;">
     <div class="container">
-      <a href="{% url 'estoque:estoque_saida_list' %}">
+      <a href="{% url 'estoque:estoque_entrada_list' %}">
         <button type="button" class="btn btn-primary">
-          voltar
+          Voltar
         </button>
       </a>
+      <br>
+      <br>
       <h1>{{ object }}</h1>
-      <div class="col-sm-6">
+      <br>
+      <div class="col-sm-6 mx-auto">
         <table class="table table-user-information">
             <tbody>
                 <tr>
@@ -28,25 +31,27 @@
             </tbody>
         </table>
       </div>
-</div>
+    </div>
+    <br>
+    <div class="table-responsive">
+        <table class="table table-sm-s table-striped">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in object.estoques.all %}
+                <tr>
+                    <td>{{ object.produto }}</td>
+                    <td>{{ object.quantidade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
 
-<table class="table table-stripe">
-    <thead>
-        <tr>
-            <th>Produto</th>
-            <th>Quantidade</th>
-            <th>Saldo</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for object in object.estoques.all %}
-        <tr>
-            <td>{{ object.produto }}</td>
-            <td>{{ object.quantidade }}</td>
-            <td>{{ object.saldo }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+</div>
 
 {% endblock %}

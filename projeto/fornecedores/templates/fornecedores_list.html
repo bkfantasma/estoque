@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block conteudo %}
+<h2>Fornecedores</h2>
+<a href="{% url 'fornecedores:fornecedor_add' %}" class="btn btn-primary">Adicionar Fornecedor</a>
+<br>
+<br>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fornecedor in objects %}
+        <tr>
+            <td>{{ fornecedor.id }}</td>
+            <td>{{ fornecedor.nome }}</td>
+            <td>{{ fornecedor.categoria }}</td>
+            <td>
+                <a href="{% url 'fornecedores:fornecedor_edit' fornecedor.id %}" class="btn btn-primary">Editar</a>
+                <a href="{% url 'fornecedores:fornecedor_delete' fornecedor.id %}" class="btn btn-danger">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock conteudo %}

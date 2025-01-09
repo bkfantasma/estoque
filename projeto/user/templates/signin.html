@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% load widget_tweaks %}
+
+{% block conteudo %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh; background-color: #f8f9fa;">
+    <div class="login-container p-4 bg-white rounded shadow-sm" style="width: 400px;">
+        <h2 class="text-center mb-4">Login</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                <div class="form-group{% if field.errors %} has-error {% endif %} mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {% if field.field.required %}
+                            <span class="required">{{ field.label }} *</span>
+                        {% else %}
+                            {{ field.label }}
+                        {% endif %}
+                    </label>
+                    {% render_field field class="form-control" %}
+                    {% for error in field.errors %}
+                        <span class="text-danger small">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="btn btn-primary w-100 me-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Entrar
+                </button>
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'core:index' %}" class="btn btn-outline-danger w-100 me-2">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            </div>
+            <div class="text-center mt-3">
+                <p class="small">Não tem uma conta? <a href="{% url 'user:signup' %}">Cadastre-se</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock conteudo %}

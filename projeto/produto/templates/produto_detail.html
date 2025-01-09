@@ -22,13 +22,6 @@
             <table class="table table-user-information">
                 <tbody class="text-center">
                     <tr>
-                        <th>Importado</th>
-                        <td>
-                            {% if object.importado %}
-                            <i class="bi bi-check-circle"></i>
-                            {% else %}
-                            <i class="bi bi-x-circle"></i>
-                            {% endif %}
                         </td>
                     </tr>
                     <tr>
@@ -41,7 +34,7 @@
                     </tr>
                     <tr>
                         <th>Preco</th>
-                        <td>R$ <span class="pull-right">{{ object.preco }} </span></td>
+                        <td>R${{ object.preco }}</td>
                     </tr>
                     <tr>
                         <th>Estoque</th>
@@ -50,6 +43,10 @@
                     <tr>
                         <th>Estoque minimo</th>
                         <td>{{ object.estoque_minimo }}</td>
+                    </tr>
+                    <tr>
+                      <th>Fornecedor</th>
+                      <th>{{ object.fornecedor.nome }}</th>
                     </tr>
                 </tbody>
             </table>

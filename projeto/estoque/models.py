@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from projeto.core.models import TimeStampedModel
 from projeto.produto.models import Produto
 from .managers import EstoqueEntradaManager, EstoqueSaidaManager
+from django.conf import settings
+from django.db.models import Sum
 
 MOVIMENTO =(
     ('e', 'entrada'),
@@ -11,7 +13,7 @@ MOVIMENTO =(
 )
 
 class Estoque(TimeStampedModel):
-    funcionario = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    funcionario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     nf = models.PositiveBigIntegerField('nota fiscal', null=True, blank=True)
     movimento = models.CharField(max_length=1, choices=MOVIMENTO)
 
@@ -19,8 +21,8 @@ class Estoque(TimeStampedModel):
         ordering = ('-created',)
 
     def __str__(self):
-        return '{} - {} - {}'.format(self.pk, self.nf, self.created.strftime('%D / %M / %Y'))
-    
+        return f"{self.created.strftime('%D / %M / %Y')} - {self.funcionario.nome}"
+
     def nf_formated(self):
         return str(self.nf).zfill(3)
     
