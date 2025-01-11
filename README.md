@@ -62,11 +62,11 @@ Este é um sistema desenvolvido em Django para gerenciar vendas, controle de est
    python manage.py migrate
    ```
 
-5. Login de Teste:
+5. Acesso:
    ```
-   email: tester@tester.com
-   senha:tester
-   ou cadastre um novo usuario
+   Cadastre uma conta > Faca Login
+   Crie um fornecedor > crie Produto
+   Adicione entrada ao estoque 
    ```
 
 
