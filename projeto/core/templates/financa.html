@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block conteudo %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 style="margin-top: 10px;">Relatório Financeiro:</h2>
+            <hr>
+            <h4>Valor Total das Vendas: R$ {{ valor_total_vendas|floatformat:2 }}</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade Vendida</th>
+                        <th>Receita Total (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.produto }}</td>
+                        <td>{{ produto.quantidade_vendida }}</td>
+                        <td>R$ {{ produto.receita_total|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h2 style="margin-top: 10px;">Vendas por Método de Pagamento:</h2>
+            <hr>
+            <table class="table table-striped" style="margin-top: 53px;">
+                <thead>
+                    <tr>
+                        <th>Método de Pagamento</th>
+                        <th>Total Vendido (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for metodo in metodos_pagamento %}
+                    <tr>
+                        <td>{{ metodo.metodo }}</td>
+                        <td>R$ {{ metodo.total_vendas|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

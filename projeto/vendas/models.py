@@ -1,8 +1,10 @@
 from django.db import models
 from projeto.produto.models import Produto
+from projeto.user.models import User
 
 
 class Venda(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     data_venda = models.DateTimeField(auto_now_add=True)
     forma_pagamento = models.CharField(max_length=100, default='Dinheiro')
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

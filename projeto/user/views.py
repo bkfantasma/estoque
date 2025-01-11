@@ -49,7 +49,8 @@ def logout(request):
 def user_dashboard(request):
     user = request.user  
     movimentacoes_estoque = Estoque.objects.filter(funcionario=user).order_by('-created')
-        
+    
+
     context = {
         'user': user,
         'movimentacoes_estoque': movimentacoes_estoque,
