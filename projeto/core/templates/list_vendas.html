@@ -12,7 +12,9 @@
                 <th>Forma de Pagamento</th>
                 <th>Total (R$)</th>
                 <th>Funcionario</th>
+                {% if user.is_authenticated %}
                     <th>acoes</th>
+                {% endif %}
             </tr>
         </thead>
             <tbody>
@@ -22,11 +24,13 @@
                         <td>{{ venda.forma_pagamento }}</td>
                         <td>{{ venda.total_calculado|floatformat:2 }}</td>
                         <td>{{ venda.user.nome }}</td>
+                        {% if user.is_authenticated %}  
                         <td>
                             <a href="{% url 'vendas:gerar_recibo' venda_id=venda.id %}">
                                 <button class="btn btn-primary">Recibo</button>
                             </a>
                         </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
         </tbody>
