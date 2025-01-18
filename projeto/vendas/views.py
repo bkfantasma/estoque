@@ -21,6 +21,7 @@ def register_venda(request):
 
         if venda_form.is_valid() and item_venda_formset.is_valid():
             venda = venda_form.save(commit=False)
+            venda.user = request.user
             venda.save()  
 
             for form in item_venda_formset:
