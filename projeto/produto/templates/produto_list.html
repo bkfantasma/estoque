@@ -2,8 +2,9 @@
 
 {% block conteudo %}
 
-<div style="text-align: center; padding-top: 5px;" class="container d-flex justify-content-between align-items-center">
-    <h1>Todos os produtos:</h1>
+<div class="sidebar" style="background-color: rgb(13, 12, 12);">
+<div class="container d-flex justify-content-between align-items-center">
+    <h2>Todos os produtos:</h2>
     <span class="pull-right">
         <a href="{% url 'produto:produto_add' %}">
             {% if user.is_authenticated %}
@@ -14,11 +15,10 @@
         </a>
     </span>
 </div>
-
-<div class="container">
+<div class="container" style="background-color: rgb(13, 12, 12);">
     {% if object_list %}
     <table class="table table-striped">
-        <thead>
+        <thead style="color: aliceblue;">
             <tr>
                 <th>ncm</th>
                 <th>produto</th>
@@ -34,14 +34,14 @@
         <tbody>
             {% for object in object_list %}
             <tr>
-                <td>{{ object.ncm }}</td>
-                <td><a href="{{ object.get_absolute_url }}">{{ object.produto }}</a></td>
-                <td>R$ <span class="pull-right">{{ object.preco }}</span></td>
-                <td class="text-center">{{ object.estoque }}</td>
-                <td class="text-center">{{ object.estoque_minimo }}</td>
-                <td class="text-center">{{ object.fornecedor.nome }}</td>
+                <td style="color: aliceblue;">{{ object.ncm }}</td>
+                <td style="color: aliceblue;"><a href="{{ object.get_absolute_url }}">{{ object.produto }}</a></td>
+                <td style="color: aliceblue;">R$ <span>{{ object.preco }}</span></td>
+                <td style="color: aliceblue;" class="text-center">{{ object.estoque }}</td>
+                <td style="color: aliceblue;" class="text-center">{{ object.estoque_minimo }}</td>
+                <td style="color: aliceblue;" class="text-center">{{ object.fornecedor.nome }}</td>
                 {% if user.is_authenticated %}
-                <td>
+                <td style="text-align: center; color: aquamarine;">
                     <a href="{% url 'produto:produto_delete' object.id %}" class="btn btn-danger">Excluir</a>
                 </td>
                 {% endif %}
@@ -51,8 +51,21 @@
     </table>
 
     <p class="alert alert-warning" style="display: none;" id="message">Sem itens na lista</p>
-
+    
     {% endif %}
+</div>
 </div>
 
 {% endblock %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
+{% endblock css %}

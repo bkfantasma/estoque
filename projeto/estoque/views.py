@@ -21,8 +21,10 @@ def estoque_entrada_list(request):
 def estoque_entrada_detail(request, pk):
     template_name = 'estoque_entrada_detail.html'
     object = EstoqueEntrada.objects.get(pk=pk)
-    context = {'object': object}
-    return render(request, template_name, context)
+    if object != None:
+        context = {'object': object}
+        return render(request, template_name, context)
+    return redirect("core:index")
 
 def dar_baixa_estoque_add(estoque):
     produtos = estoque.estoques.all()

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from projeto.vendas.models import ItemVenda, Venda
 from django.db.models import Sum, F
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 def index(request):
     produtos = ItemVenda.objects.values('produto__produto').annotate(total_vendido=Sum('quantidade')).order_by('-total_vendido')
@@ -44,7 +45,7 @@ def financas(request):
     produtos = ItemVenda.objects.values('produto__produto') \
         .annotate(
             total_vendido=Sum('quantidade'),
-            receita_total=Sum(F('quantidade') * F('produto__preco'))
+            receita_total=Sum(F('quantidade') * F('preco_unitario'))
         ).order_by('-total_vendido')
 
     produtos_nomes = [produto['produto__produto'] for produto in produtos]
@@ -65,6 +66,10 @@ def financas(request):
         for metodo in metodos_pagamento
     ]
 
+    vendas_por_usuario = Venda.objects.values('user__nome').annotate(
+        total_vendas=Sum('total')
+    ).order_by('-total_vendas')
+
     produtos_data = [
         {
             'produto': nome,
@@ -78,5 +83,22 @@ def financas(request):
         'produtos': produtos_data,
         'valor_total_vendas': valor_total_vendas,
         'metodos_pagamento': metodos_pagamento_data,
+        'vendas_por_usuario': vendas_por_usuario,
     }
     return render(request, 'financa.html', context)
+
+@login_required
+def vendas_usuario_detalhes(request, nome):
+    vendas = Venda.objects.filter(user__nome=nome).values('forma_pagamento').annotate(
+        total_vendido=Sum('total')
+    )
+
+    data = [
+        {
+            'metodo_pagamento': venda['forma_pagamento'],
+            'total_vendido': float(venda['total_vendido']),
+        }
+        for venda in vendas
+    ]
+
+    return JsonResponse({'vendas': data})

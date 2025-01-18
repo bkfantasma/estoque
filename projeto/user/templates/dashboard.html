@@ -3,51 +3,109 @@
 {% block conteudo %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <div class="user-info">
-                <h3>Informações do Usuário</h3>
-                <br>
-                <div class="user-detail">
-                    <p><strong>Nome:</strong> {{ user.nome }} {{ user.sobrenome }}</p>
-                    <br>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <br>
-                    <p><strong>Último Login:</strong> {{ user.last_login }}</p>
-                </div>
+        <div class="col-md-3">
+            <div class="sidebar" style="background-color: rgb(13, 12, 12);">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('inicio')">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('estoque')">Estoque</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('vendas')">Vendas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user:logout' %}">Sair</a>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="stock-movements">
-                <h3>Movimentações de Estoque</h3>
-                {% if movimentacoes_estoque %}
-                <div class="movements-list">
+        <div class="col-md-6" >
+            <div id="inicio" class="content-section" >
+                <div class="user-info sidebar" style="background-color: rgb(13, 12, 12);">
+                    <h3>Informações do Usuário</h3>
+                    <hr>
+                    <p><strong>Nome:</strong> {{ user.nome }} {{ user.sobrenome }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>CPF:</strong> {{ user.cpf }}</p>
+                    <p><strong>Último Login:</strong> {{ user.last_login }}</p>
+                </div>
+            </div>
+
+            <div id="estoque" class="content-section" style="display: none;">
+                <div class="stock-movements sidebar" style="background-color: rgb(13, 12, 12);">
+                    <h3>Movimentações de Estoque</h3>
+                    <hr>
+                    {% if movimentacoes_estoque %}
                     {% for movimento in movimentacoes_estoque %}
                     <div class="movement-item">
-                        <div class="movement-header">
-                            <strong>Nota Fiscal:</strong> {{ movimento.nf_formated }}
-                            <span class="movement-date">{{ movimento.created }}</span>
-                        </div>
-                        <div class="movement-body">
-                            <p><strong>Tipo de Movimento:</strong>
-                                {% if movimento.movimento == 'e' %}
-                                    Entrada
-                                    <br>
-                                    <a href="{% url 'estoque:estoque_entrada_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
-                                {% else %}
-                                Saída
-                                <br>
-
-                                <a href="{% url 'estoque:estoque_saida_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
-                                {% endif %}
-                            </p>
-                        </div>
+                        <strong>Nota Fiscal:</strong> {{ movimento.nf_formated }}<br>
+                        <strong>Data:</strong> {{ movimento.created }}<br>
+                        <strong>Movimentação:</strong> 
+                        <br>
+                        {% if movimento.movimento == 'e' %}
+                            Entrada
+                        {% else %}
+                            Saída
+                        {% endif %}
+                        <br>
+                        <a href="{% url 'estoque:estoque_entrada_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
                     </div>
+                    <hr>
+                    {% endfor %}
+                    {% else %}
+                    <p class="alert alert-warning">Nenhuma movimentação encontrada.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="vendas" class="content-section sidebar" style="display: none; background-color: rgb(13, 12, 12);">
+                <h3>Vendas</h3>
+                <hr>
+                {% if vendas %}
+                {% for venda in vendas %}
+                <div class="sale-item">
+                    <p><strong>ID Venda:</strong> {{ venda.id }}</p>
+                    <p><strong>Data:</strong> {{ venda.data_venda }}</p>
+                    <p><strong>Total:</strong> {{ venda.total }}</p>
+                    <a href="{% url 'vendas:gerar_recibo' venda.id %}" class="btn btn-info">Ver Detalhes</a>
+                </div>
+                <hr>
+                {% endfor %}
+                {% else %}
+                <p class="alert alert-warning">Nenhuma venda encontrada.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div id="estoque-summary" class="sidebar" style="display: none; background-color: rgb(13, 12, 12);">
+                <h4>Resumo de Estoque</h4>
+                <hr>
+                <p><strong>Entradas:</strong> <span class="badge bg-primary">{{ entradas_count }}</span></p>
+                <p><strong>Saídas:</strong> <span class="badge bg-danger">{{ saidas_count }}</span></p>
+                <p><strong>Última Movimentação:</strong></p>
+                <p>{{ ultima_movimentacao|date:"d/m/Y H:i" }}</p>
+            </div>
+
+            <div id="vendas-summary" style="display: none;">
+                <div class="sidebar" style="background-color: rgb(13, 12, 12);">
+                    <h4>Resumo de Vendas</h4>
+                    <hr>
+                    <p><strong>Total Vendido:</strong> R$ {{ total_vendido }}</p>
+                </div>
+                <div class="sidebar" style="margin-top: 15px; background-color: rgb(13, 12, 12);">
+                    <h5>Por Método de Pagamento:</h5>
+                    <hr>
+                    {% for metodo, data in vendas_por_metodo.items %}
+                    <p>
+                        <strong>{{ metodo }}:</strong> {{ data.quantidade }} vendas -> R$ {{ data.total|floatformat:2 }}
+                    </p>
                     {% endfor %}
                 </div>
-                {% else %}
-                <p class="alert alert-warning">Nenhuma movimentação de estoque encontrada.</p>
-                {% endif %}
+                
             </div>
         </div>
     </div>
@@ -59,51 +117,36 @@
     .container {
         margin-top: 20px;
     }
-    
-    .user-info, .stock-movements {
+    .sidebar {
         border: 1px solid #ddd;
         padding: 20px;
-        margin-bottom: 20px;
         border-radius: 8px;
+        background-color: #f9f9f9;
     }
-    
-    .user-info h3, .stock-movements h3 {
-        color: #007bff;
+    .content-section {
+        display: none;
     }
-    
-    .user-detail p {
-        margin-bottom: 10px;
-    }
-    
-    .movement-item {
-        margin-bottom: 15px;
-        padding: 15px;
-        border-radius: 8px;
-    }
-    
-    .movement-header {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    
-    .movement-body {
-        font-size: 14px;
-        margin-top: 10px;
-    }
-    
-    .movement-date {
-        font-size: 12px;
-        color: #888;
-    }
-    
-    .movement-item a {
-        margin-top: 10px;
-    }
-    
-    @media (max-width: 768px) {
-        .user-info, .stock-movements {
-            margin-bottom: 10px;
-        }
+    .content-section.active {
+        display: block;
     }
 </style>
 {% endblock css %}
+
+{% block js %}
+<script>
+    function showSection(sectionId) {
+        document.querySelectorAll('.content-section').forEach(function (section) {
+            section.style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+
+        const estoqueSummary = document.getElementById('estoque-summary');
+        const vendasSummary = document.getElementById('vendas-summary');
+
+        estoqueSummary.style.display = sectionId === 'estoque' ? 'block' : 'none';
+        vendasSummary.style.display = sectionId === 'vendas' ? 'block' : 'none';
+    }
+
+    showSection('inicio');
+</script>
+{% endblock js %}

@@ -5,7 +5,7 @@
     <br>
     <br>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 ">
             <h2>Produtos Vendidos</h2>
             <canvas id="produtosChart"></canvas>
         </div>
@@ -18,6 +18,18 @@
     </div>
 </div>
 {% endblock conteudo %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
+{% endblock css %}
 
 {% block js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

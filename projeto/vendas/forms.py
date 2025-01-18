@@ -5,7 +5,7 @@ from projeto.produto.models import Produto
 class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
-        fields = '__all__'
+        fields = ('forma_pagamento', 'total')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

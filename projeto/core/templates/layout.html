@@ -12,7 +12,7 @@
     {% block css %}
     {% endblock css %}
   </head>
-  <body>
+  <body style="background-color: rgb(20, 18, 18);">
     <nav class="navbar navbar-light bg-light" style="background-color: black !important;">
       <div class="container-fluid">
         <a class="navbar-brand" style="color: aliceblue;" href="{% url 'core:index' %}">Home</a>
@@ -48,14 +48,13 @@
         {% if user.is_authenticated %}
         <a class="navbar-brand" style="color: aliceblue;" href="{% url 'core:financas' %}">Financeiro</a>
           <a href="{% url 'user:user_dashboard' %}" class="navbar-brand  btn btn-primary"  style="color: aliceblue; margin-right: 5px;">Meu Perfil</a>
-          <a href="{% url 'user:logout' %}" class="navbar-brand  btn btn-danger"  style="color: aliceblue;">Logout</a>
           {% else %}
             <a href="{% url 'user:signin' %}" class="navbar-brand" style="color: aliceblue;">Login</a>
           {% endif %}
         </div>
       </div>
     </nav>
-    <div class="container">
+    <div class="container" style="color:aliceblue;">
 
       {% block conteudo %} 
       {% endblock %}

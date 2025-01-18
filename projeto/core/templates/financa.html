@@ -3,50 +3,189 @@
 {% block conteudo %}
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h2 style="margin-top: 10px;">Relatório Financeiro:</h2>
-            <hr>
-            <h4>Valor Total das Vendas: R$ {{ valor_total_vendas|floatformat:2 }}</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Quantidade Vendida</th>
-                        <th>Receita Total (R$)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for produto in produtos %}
-                    <tr>
-                        <td>{{ produto.produto }}</td>
-                        <td>{{ produto.quantidade_vendida }}</td>
-                        <td>R$ {{ produto.receita_total|floatformat:2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-md-3" >
+            <div class="sidebar" style="background-color: rgb(13, 12, 12);">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('relatorio-financeiro')">Relatório Financeiro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('vendas-metodo')">Venda por Método de Pagamento</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('vendas-usuario-metodo')">Venda por Usuário</a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <h2 style="margin-top: 10px;">Vendas por Método de Pagamento:</h2>
-            <hr>
-            <table class="table table-striped" style="margin-top: 53px;">
-                <thead>
-                    <tr>
-                        <th>Método de Pagamento</th>
-                        <th>Total Vendido (R$)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for metodo in metodos_pagamento %}
-                    <tr>
-                        <td>{{ metodo.metodo }}</td>
-                        <td>R$ {{ metodo.total_vendas|floatformat:2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-md-9 sidebar" style="background-color: rgb(13, 12, 12);">
+            <div id="relatorio-financeiro" class="content-section">
+                <h2>Relatório Financeiro</h2>
+                <hr>
+                <h4>Valor Total das Vendas: R$ {{ valor_total_vendas|floatformat:2 }}</h4>
+                <table class="table table-striped">
+                    <thead style="color: aliceblue">
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade Vendida</th>
+                            <th>Receita Total (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in produtos %}
+                        <tr>
+                            <td style="color: aliceblue">{{ produto.produto }}</td>
+                            <td style="color: aliceblue">{{ produto.quantidade_vendida }}</td>
+                            <td style="color: aliceblue">R$ {{ produto.receita_total|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="vendas-metodo" class="content-section" style="display: none;">
+                <h2>Venda por Método de Pagamento</h2>
+                <hr>
+                <table class="table table-striped">
+                    <thead style="color: aliceblue">
+                        <tr>
+                            <th>Método de Pagamento</th>
+                            <th>Total Vendido (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for metodo in metodos_pagamento %}
+                        <tr>
+                            <td style="color: aliceblue">{{ metodo.metodo }}</td>
+                            <td style="color: aliceblue">R$ {{ metodo.total_vendas|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="vendas-usuario-metodo" class="content-section" style="display: none;">
+                <h2>Vendas por Usuário</h2>
+                <hr>
+                <table class="table table-striped">
+                    <thead style="color: aliceblue">
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Total Vendido (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in vendas_por_usuario %}
+                        <tr>
+                            <td>
+                                <a style="color: aliceblue" href="#" onclick="mostrarModal('{{ venda.user__username }}')">
+                                    {{ venda.user__nome }}
+                                </a>
+                            </td>
+                            <td style="color: aliceblue">R$ {{ venda.total_vendas|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<div id="modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="fecharModal()">&times;</span>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Método de Pagamento</th>
+                    <th>Total Vendido (R$)</th>
+                </tr>
+            </thead>
+            <tbody id="modal-content-body">
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock conteudo %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .content-section {
+        display: none;
+    }
+
+    .content-section.active {
+        display: block;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 60%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+        float: right;
+        cursor: pointer;
+        font-size: 20px;
+    }
+</style>
+{% endblock css %}
+
+{% block js %}
+<script>
+    function showSection(sectionId) {
+        document.querySelectorAll('.content-section').forEach(function (section) {
+            section.style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+    }
+
+    function mostrarModal(username) {
+        const data = {
+            'Dinheiro': 1500.0,
+            'Cartão de Crédito': 800.0,
+            'Cartão de Débito': 1200.0
+        };
+
+        const modalContentBody = document.getElementById('modal-content-body');
+        modalContentBody.innerHTML = '';
+        for (const [metodo, total] of Object.entries(data)) {
+            const row = `<tr><td>${metodo}</td><td>R$ ${total.toFixed(2)}</td></tr>`;
+            modalContentBody.innerHTML += row;
+        }
+
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function fecharModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    showSection('relatorio-financeiro');
+</script>
+{% endblock js %}

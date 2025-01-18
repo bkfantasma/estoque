@@ -1,13 +1,14 @@
 {% extends 'layout.html' %}
 
 {% block conteudo %}
+<div class="container sidebar" style="background-color: rgb(13, 12, 12);">
 <h2>Fornecedores</h2>
 <a href="{% url 'fornecedores:fornecedor_add' %}" class="btn btn-primary">Adicionar Fornecedor</a>
 <br>
 <br>
 
-<table class="table">
-    <thead>
+<table class="table" style="text-align: center;">
+    <thead style="color: white;">
         <tr>
             <th>ID</th>
             <th>Nome</th>
@@ -18,9 +19,9 @@
     <tbody>
         {% for fornecedor in objects %}
         <tr>
-            <td>{{ fornecedor.id }}</td>
-            <td>{{ fornecedor.nome }}</td>
-            <td>{{ fornecedor.categoria }}</td>
+            <td style="color: white;">{{ fornecedor.id }}</td>
+            <td style="color: white;">{{ fornecedor.nome }}</td>
+            <td style="color: white;">{{ fornecedor.categoria }}</td>
             <td>
                 <a href="{% url 'fornecedores:fornecedor_edit' fornecedor.id %}" class="btn btn-primary">Editar</a>
                 <a href="{% url 'fornecedores:fornecedor_delete' fornecedor.id %}" class="btn btn-danger">Excluir</a>
@@ -29,4 +30,17 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 {% endblock conteudo %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
+{% endblock css %}

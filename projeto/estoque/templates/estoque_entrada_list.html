@@ -1,38 +1,50 @@
 {% extends 'layout.html' %}
 
 {% block conteudo %}
+<div class="container sidebar" style="background-color: rgb(13, 12, 12);">
+    <h2>Entrada no Estoque:
+    <span class="pull-right">
+        <a href="{% url 'estoque:estoque_entrada_add' %}">
+            <button type="button" class="btn btn-primary">
+                <span class="fa fa-plus"></span>Adicionar
+            </button>
+        </a>
+    </span>
+    </h2>
 
-<h2>Entrada no Estoque:
-<span class="pull-right">
-    <a href="{% url 'estoque:estoque_entrada_add' %}">
-        <button type="button" class="btn btn-primary">
-            <span class="fa fa-plus"></span>Adicionar
-        </button>
-    </a>
-</span>
-</h2>
-
-{% if object_list %}
- <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Nf</th>
-            <th>Data</th>
-            <th>Funcionario</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for object in object_list %}
-        <tr>
-            <td><a href="{% url 'estoque:estoque_entrada_detail' object.id %}">{{ object.nf_formated }}</a></td>
-            <td>{{ object.created }}</td>
-            <td>{{ object.funcionario }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
- </table>
-{% else %}
- <p class="alert alert-warning">Sem itens na lista</p>
-{% endif %}
-
+    {% if object_list %}
+    <table class="table table-striped">
+        <thead style="color: white;">
+            <tr  style="text-align: center;">
+                <th>Nf</th>
+                <th>Data</th>
+                <th>Funcionario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr style="text-align: center;">
+                <td style="color: white;"><a href="{% url 'estoque:estoque_entrada_detail' object.id %}">{{ object.nf_formated }}</a></td>
+                <td style="color: white;">{{ object.created }}</td>
+                <td style="color: white;">{{ object.funcionario }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="alert alert-warning">Sem itens na lista</p>
+    {% endif %}
+</div>
 {% endblock conteudo %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+</style>
+{% endblock css %}

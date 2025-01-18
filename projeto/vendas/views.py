@@ -26,6 +26,8 @@ def register_venda(request):
             for form in item_venda_formset:
                 item_venda = form.save(commit=False)
                 item_venda.venda = venda 
+                item_venda.user = request.user
+
                 item_venda.save()
 
                 produto = item_venda.produto

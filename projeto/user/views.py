@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from projeto.user.models import User
 from projeto.estoque.models import Estoque, EstoqueItens
+from projeto.vendas.models import Venda
 from projeto.user.forms import UserForm, LoginForm
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max, Sum, Count
+
 
 def signup(request):
     if request.method == "POST":
@@ -48,12 +51,38 @@ def logout(request):
 @login_required
 def user_dashboard(request):
     user = request.user  
+
     movimentacoes_estoque = Estoque.objects.filter(funcionario=user).order_by('-created')
-    
+    entradas_count = movimentacoes_estoque.filter(movimento='e').count()
+    saidas_count = movimentacoes_estoque.filter(movimento='s').count()
+    ultima_movimentacao = movimentacoes_estoque.aggregate(last_date=Max('created'))['last_date']
+
+    vendas = Venda.objects.filter(user=user)
+
+    total_vendido = vendas.aggregate(total=Sum('total'))['total'] or 0
+
+    vendas_por_metodo = vendas.values('forma_pagamento').annotate(
+        quantidade=Count('id'),
+        total=Sum('total')
+    )
+
+    vendas_por_metodo_dict = {
+        venda['forma_pagamento']: {
+            'quantidade': venda['quantidade'],
+            'total': venda['total']
+        }
+        for venda in vendas_por_metodo
+    }
 
     context = {
         'user': user,
         'movimentacoes_estoque': movimentacoes_estoque,
+        'entradas_count': entradas_count,
+        'saidas_count': saidas_count,
+        'ultima_movimentacao': ultima_movimentacao,
+        'vendas': vendas,
+        'total_vendido': total_vendido,
+        'vendas_por_metodo': vendas_por_metodo_dict,
     }
-    
+
     return render(request, 'dashboard.html', context)

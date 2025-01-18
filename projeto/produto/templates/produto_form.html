@@ -3,23 +3,12 @@
 {% load widget_tweaks %}
 
 {% block conteudo %}
-
-{% block css %}
-<style>
-    span.required:after {
-        content: "*";
-        color: red;
-    }
-</style>
-{% endblock css %}
-
-<form method="post" novalidate>
-    {% csrf_token %}
-    {% for field in form.visible_fields %}
-        <div class="form-group{% if field.errors %} has-error {% endif %}">
-            {% if field.name == 'importado' %}
-                
-            {% else %}
+<div class="container sidebar col-md-6" style="background-color: rgb(13, 12, 12);">
+    <h2>Adicionar Produto:</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="row form-group{% if field.errors %} has-error {% endif %}">
                 <label for="{{ field.id_for_label }}">
                     {% if field.field.required %}
                         <span class="required">{{ field.label }} </span>
@@ -28,14 +17,31 @@
                     {% endif %}
                 </label>
                 {% render_field field class="form-control" %}
-            {% endif %}
             {% for error in field.errors %}
                 <span class="text-muted">{{ error }}</span>
             {% endfor %}
-        </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Cadastrar</button>
-</form>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </form>
+</div>
+{% endblock conteudo %}
+
+{% block css %}
+<style>
+    .sidebar {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    span.required:after {
+        content: "*";
+        color: red;
+    }
+</style>
+{% endblock css %}
 
 {% block js %}
 <script>
@@ -43,4 +49,3 @@
 </script>
 {% endblock js %}
 
-{% endblock conteudo %}
