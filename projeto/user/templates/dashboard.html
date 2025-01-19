@@ -47,11 +47,12 @@
                         <br>
                         {% if movimento.movimento == 'e' %}
                             Entrada
+                            <a href="{% url 'estoque:estoque_entrada_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
                         {% else %}
                             Saída
+                            <a href="{% url 'estoque:estoque_saida_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
                         {% endif %}
                         <br>
-                        <a href="{% url 'estoque:estoque_entrada_detail' movimento.pk %}" class="btn btn-info">Ver Detalhes</a>
                     </div>
                     <hr>
                     {% endfor %}

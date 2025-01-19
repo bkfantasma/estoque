@@ -136,5 +136,7 @@ def estoque_saida_add(request):
 def estoque_saida_detail(request, pk):
     template_name = 'estoque_saida_detail.html'
     object = EstoqueSaida.objects.get(pk=pk)
-    context = {'object': object}
-    return render(request, template_name, context)
+    if object != None:
+        context = {'object': object}
+        return render(request, template_name, context)
+    return redirect("core:index")

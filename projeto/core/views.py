@@ -48,42 +48,43 @@ def financas(request):
             receita_total=Sum(F('quantidade') * F('preco_unitario'))
         ).order_by('-total_vendido')
 
-    produtos_nomes = [produto['produto__produto'] for produto in produtos]
-    produtos_quantidade = [produto['total_vendido'] for produto in produtos]
-    produtos_receita = [produto['receita_total'] for produto in produtos]
-
-    valor_total_vendas = sum(produtos_receita)
+    valor_total_vendas = sum(produto['receita_total'] for produto in produtos)
 
     metodos_pagamento = Venda.objects.values('forma_pagamento') \
         .annotate(total_vendas=Sum('total')) \
         .order_by('-total_vendas')
 
-    metodos_pagamento_data = [
-        {
-            'metodo': metodo['forma_pagamento'],
-            'total_vendas': metodo['total_vendas'],
-        }
-        for metodo in metodos_pagamento
-    ]
-
     vendas_por_usuario = Venda.objects.values('user__nome').annotate(
         total_vendas=Sum('total')
     ).order_by('-total_vendas')
 
-    produtos_data = [
+    itens_vendidos = [
         {
-            'produto': nome,
-            'quantidade_vendida': qtd,
-            'receita_total': receita,
+            'produto': produto['produto__produto'],
+            'quantidade_vendida': produto['total_vendido'],
         }
-        for nome, qtd, receita in zip(produtos_nomes, produtos_quantidade, produtos_receita)
+        for produto in produtos
     ]
 
     context = {
-        'produtos': produtos_data,
+        'produtos': [
+            {
+                'produto': produto['produto__produto'],
+                'quantidade_vendida': produto['total_vendido'],
+                'receita_total': produto['receita_total'],
+            }
+            for produto in produtos
+        ],
         'valor_total_vendas': valor_total_vendas,
-        'metodos_pagamento': metodos_pagamento_data,
+        'metodos_pagamento': [
+            {
+                'metodo': metodo['forma_pagamento'],
+                'total_vendas': metodo['total_vendas'],
+            }
+            for metodo in metodos_pagamento
+        ],
         'vendas_por_usuario': vendas_por_usuario,
+        'itens_vendidos': itens_vendidos,
     }
     return render(request, 'financa.html', context)
 

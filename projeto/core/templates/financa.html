@@ -3,7 +3,7 @@
 {% block conteudo %}
 <div class="container">
     <div class="row">
-        <div class="col-md-3" >
+        <div class="col-md-3">
             <div class="sidebar" style="background-color: rgb(13, 12, 12);">
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -14,6 +14,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" onclick="showSection('vendas-usuario-metodo')">Venda por Usuário</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('quantidade-itens')">Total de Itens Vendidos</a>
                     </li>
                 </ul>
             </div>
@@ -26,7 +29,7 @@
                 <h4>Valor Total das Vendas: R$ {{ valor_total_vendas|floatformat:2 }}</h4>
                 <table class="table table-striped">
                     <thead style="color: aliceblue">
-                        <tr>
+                        <tr style="text-align: center;">
                             <th>Produto</th>
                             <th>Quantidade Vendida</th>
                             <th>Receita Total (R$)</th>
@@ -34,7 +37,7 @@
                     </thead>
                     <tbody>
                         {% for produto in produtos %}
-                        <tr>
+                        <tr style="text-align: center;">
                             <td style="color: aliceblue">{{ produto.produto }}</td>
                             <td style="color: aliceblue">{{ produto.quantidade_vendida }}</td>
                             <td style="color: aliceblue">R$ {{ produto.receita_total|floatformat:2 }}</td>
@@ -49,14 +52,14 @@
                 <hr>
                 <table class="table table-striped">
                     <thead style="color: aliceblue">
-                        <tr>
+                        <tr style="text-align: center;">
                             <th>Método de Pagamento</th>
                             <th>Total Vendido (R$)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for metodo in metodos_pagamento %}
-                        <tr>
+                        <tr style="text-align: center;">
                             <td style="color: aliceblue">{{ metodo.metodo }}</td>
                             <td style="color: aliceblue">R$ {{ metodo.total_vendas|floatformat:2 }}</td>
                         </tr>
@@ -70,20 +73,41 @@
                 <hr>
                 <table class="table table-striped">
                     <thead style="color: aliceblue">
-                        <tr>
+                        <tr style="text-align: center;">
                             <th>Usuário</th>
                             <th>Total Vendido (R$)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for venda in vendas_por_usuario %}
-                        <tr>
+                        <tr style="text-align: center;">
                             <td>
-                                <a style="color: aliceblue" href="#" onclick="mostrarModal('{{ venda.user__username }}')">
+                                <a style="color: aliceblue" href="#" onclick="mostrarModal('{{ venda.user__nome }}')">
                                     {{ venda.user__nome }}
                                 </a>
                             </td>
                             <td style="color: aliceblue">R$ {{ venda.total_vendas|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="quantidade-itens" class="content-section" style="display: none;">
+                <h2>Total de Itens Vendidos</h2>
+                <hr>
+                <table class="table table-striped">
+                    <thead style="color: aliceblue">
+                        <tr style="text-align: center;">
+                            <th>Produto</th>
+                            <th>Quantidade Vendida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in itens_vendidos %}
+                        <tr style="text-align: center;">
+                            <td style="color: aliceblue">{{ item.produto }}</td>
+                            <td style="color: aliceblue">{{ item.quantidade_vendida }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -95,7 +119,7 @@
 
 <div id="modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <span class="close" onclick="fecharModal()">&times;</span>
+        <span style="margin-left: 95%;" class="close" onclick="fecharModal()">&times;</span>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -157,6 +181,7 @@
 {% endblock css %}
 
 {% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script>
     function showSection(sectionId) {
         document.querySelectorAll('.content-section').forEach(function (section) {
@@ -166,20 +191,21 @@
     }
 
     function mostrarModal(username) {
-        const data = {
-            'Dinheiro': 1500.0,
-            'Cartão de Crédito': 800.0,
-            'Cartão de Débito': 1200.0
-        };
+        fetch(`/vendas-usuario-detalhes/${username}/`)
+            .then(response => response.json())
+            .then(data => {
+                const modalContentBody = document.getElementById('modal-content-body');
+                modalContentBody.innerHTML = '';
+                data.vendas.forEach(venda => {
+                    const row = `<tr><td>${venda.metodo_pagamento}</td><td>R$ ${venda.total_vendido.toFixed(2)}</td></tr>`;
+                    modalContentBody.innerHTML += row;
+                });
 
-        const modalContentBody = document.getElementById('modal-content-body');
-        modalContentBody.innerHTML = '';
-        for (const [metodo, total] of Object.entries(data)) {
-            const row = `<tr><td>${metodo}</td><td>R$ ${total.toFixed(2)}</td></tr>`;
-            modalContentBody.innerHTML += row;
-        }
-
-        document.getElementById('modal').style.display = 'flex';
+                document.getElementById('modal').style.display = 'flex';
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados do usuário:', error);
+            });
     }
 
     function fecharModal() {
