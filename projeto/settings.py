@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os 
-import django_heroku
 
 # Construção de caminhos dentro do projeto como: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +26,7 @@ SECRET_KEY = 'django-insecure-u^3gi@j=#3t$119d+w^w0nd7nz7ic+a_4z@05yrwph+rthyd%n
 # AVISO DE SEGURANÇA: não execute com debug ativado em produção!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["momentumcafeestoquecontrol.com"]
 
 
 # Definição de aplicativos
