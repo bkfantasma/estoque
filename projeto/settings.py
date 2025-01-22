@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-u^3gi@j=#3t$119d+w^w0nd7nz7ic+a_4z@05yrwph+rthyd%n
 # AVISO DE SEGURANÇA: não execute com debug ativado em produção!
 DEBUG = True
 
-ALLOWED_HOSTS = ["momentumcafeestoquecontrol.com"]
+ALLOWED_HOSTS = []
 
 
 # Definição de aplicativos
